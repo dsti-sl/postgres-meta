@@ -12,6 +12,10 @@ export default async (fastify: FastifyInstance) => {
         request.headers.pg = CryptoJS.AES.decrypt(encryptedHeader, CRYPTO_KEY).toString(
           CryptoJS.enc.Utf8
         )
+
+        request.log.info({
+          msg: `The header was passed: ${request.headers.pg}`
+        })
       } catch (e: any) {
         request.log.warn({
           message: 'failed to parse encrypted connstring',
@@ -20,22 +24,25 @@ export default async (fastify: FastifyInstance) => {
         throw new Error('failed to process upstream connection details')
       }
     } else {
+      request.log.info({
+        msg: `The header was not passed`
+      })
       request.headers.pg = PG_CONNECTION
     }
     done()
   })
 
-  fastify.register(require('./columns'), { prefix: '/columns' })
-  fastify.register(require('./config'), { prefix: '/config' })
-  fastify.register(require('./extensions'), { prefix: '/extensions' })
-  fastify.register(require('./functions'), { prefix: '/functions' })
-  fastify.register(require('./policies'), { prefix: '/policies' })
-  fastify.register(require('./publications'), { prefix: '/publications' })
-  fastify.register(require('./query'), { prefix: '/query' })
-  fastify.register(require('./schemas'), { prefix: '/schemas' })
-  fastify.register(require('./roles'), { prefix: '/roles' })
+  // fastify.register(require('./columns'), { prefix: '/columns' })
+  // fastify.register(require('./config'), { prefix: '/config' })
+  // fastify.register(require('./extensions'), { prefix: '/extensions' })
+  // fastify.register(require('./functions'), { prefix: '/functions' })
+  // fastify.register(require('./policies'), { prefix: '/policies' })
+  // fastify.register(require('./publications'), { prefix: '/publications' })
+  // fastify.register(require('./query'), { prefix: '/query' })
+  // fastify.register(require('./schemas'), { prefix: '/schemas' })
+  // fastify.register(require('./roles'), { prefix: '/roles' })
   fastify.register(require('./tables'), { prefix: '/tables' })
-  fastify.register(require('./triggers'), { prefix: '/triggers' })
-  fastify.register(require('./types'), { prefix: '/types' })
-  fastify.register(require('./views'), { prefix: '/views' })
+  // fastify.register(require('./triggers'), { prefix: '/triggers' })
+  // fastify.register(require('./types'), { prefix: '/types' })
+  // fastify.register(require('./views'), { prefix: '/views' })
 }
